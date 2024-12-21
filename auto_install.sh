@@ -88,23 +88,6 @@ else
     exit 1
 fi
 
-# 下载并解压 iRedMail
-# cd /opt
-# wget https://github.com/iredmail/iRedMail/refs/tags/${VERSION}.tar.gz -O iRedMail-${VERSION}.tar.gz
-# if [ $? -eq 0 ]; then
-#   log "iRedMail 安装包已下载。"
-# else
-#   log "下载 iRedMail 安装包失败。"
-#   exit 1
-# fi
-
-# tar xvf iRedMail-${VERSION}.tar.gz
-# if [ $? -eq 0 ]; then
-#   log "iRedMail 安装包已解压。"
-# else
-#   log "解压 iRedMail 安装包失败。"
-#   exit 1
-# fi
 
 cd iRedMail-${VERSION}
 
@@ -122,7 +105,7 @@ set MAIL_ADMIN_PASSWORD "${MAIL_ADMIN_PASSWORD}"
 log_file /opt/iredmail_install.log
 
 # 启动安装程序
-spawn sudo bash iRedMail.sh
+spawn sudo bash /opt/iRedMail-1.7.1/iRedMail.sh
 
 # 检查 spawn 是否成功
 if {![info exists spawn_id] || \$spawn_id == ""} {
