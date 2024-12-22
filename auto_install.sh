@@ -90,6 +90,7 @@ fi
 
 
 cd iRedMail-${VERSION}
+export TERM=xterm
 
 # 创建 Expect 脚本
 cat <<EOL > /opt/iredmail_install.expect
