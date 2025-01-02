@@ -80,7 +80,7 @@ else
 fi
 
 # 安装必要的依赖
-yum install -y wget tar expect
+yum install -y expect
 if [ $? -eq 0 ]; then
     log "必要的依赖已安装。"
 else
