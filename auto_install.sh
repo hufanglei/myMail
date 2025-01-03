@@ -70,14 +70,6 @@ else
     exit 1
 fi
 
-# 获取外网 IP 地址
-external_ip=$(curl -s ifconfig.me)
-if [ $? -eq 0 ]; then
-    log "本机的外网 IP 地址是: $external_ip"
-else
-    log "获取外网 IP 地址失败。"
-    exit 1
-fi
 
 # 安装必要的依赖
 yum install -y wget tar expect
