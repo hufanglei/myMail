@@ -81,7 +81,7 @@ else
 fi
 
 
-cd iRedMail-${VERSION}
+cd /opt/iRedMail-${VERSION}
 export TERM=xterm
 
 # 创建 Expect 脚本
