@@ -2,19 +2,17 @@
 
 # 检查参数个数是否正确
 if [ $# -ne 5 ]; then
-    echo "Usage: $0 <HOST_DOMAIN_PRE>  <SECOND_DOMAIN_PRE> <DOMAIN>  <MAIL_ADMIN> <MAIL_ADMIN_PASSWORD> <MYSQL_ROOT_PASSWORD>"
+    echo "Usage: $0 <DOMAIN> <SECOND_DOMAIN_PRE> <MAIL_ADMIN> <MAIL_ADMIN_PASSWORD> <MYSQL_ROOT_PASSWORD>"
     exit 1
 fi
 
 # 获取传递进来的参数
-HOST_DOMAIN_PRE="$1"
-HOST_DOMAIN="$1.$3"
+MAIL_DOMAIN="$1"
 SECOND_DOMAIN_PRE="$2"
-MAIL_DOMAIN="$2.$3"
-DOMAIN="$3"
-MAIL_ADMIN="$4"
-MAIL_ADMIN_PASSWORD="$5"
-MYSQL_ROOT_PASSWORD="$6"
+HOST_DOMAIN="$2.$1"
+MAIL_ADMIN="$3"
+MAIL_ADMIN_PASSWORD="$4"
+MYSQL_ROOT_PASSWORD="$5"
 
 VERSION="1.7.1"
 LOG_FILE="/opt/auto-install.log"
@@ -33,14 +31,14 @@ log() {
 # 设置主机名
 hostnamectl set-hostname "${HOST_DOMAIN}"
 if [ $? -eq 0 ]; then
-    log "主机名已设置为: $(hostnamectl status | grep 'Static hostname' | awk '{print $HOST_DOMAIN}')"
+    log "主机名已设置为: $(hostnamectl status | grep 'Static hostname' | awk '{print $3}')"
 else
     log "设置主机名失败。"
     exit 1
 fi
 
 # 修改 /etc/hosts 文件，将 FQDN 主机名列为第一项
-echo "127.0.0.1   ${HOST_DOMAIN} ${HOST_DOMAIN_PRE} localhost localhost.localdomain" > /etc/hosts
+echo "127.0.0.1   ${HOST_DOMAIN} ${SECOND_DOMAIN_PRE} localhost localhost.localdomain" > /etc/hosts
 if [ $? -eq 0 ]; then
     log "/etc/hosts 文件已更新，并将 FQDN 主机名列为第一项。"
 else
@@ -69,7 +67,7 @@ cat <<EOL > /opt/iredmail_install.expect
 set timeout -1
 log_user 1
 set MYSQL_ROOT_PASSWORD "${MYSQL_ROOT_PASSWORD}"
-set MAIL_DOMAIN "${MAIL_DOMAIN}"
+set DOMAIN "${DOMAIN}"
 set MAIL_ADMIN_PASSWORD "${MAIL_ADMIN_PASSWORD}"
 
 # 启动日志记录
@@ -121,7 +119,7 @@ sleep 5
 
 # 设置邮件域名
 expect {
-    "Your first mail domain name" { send "\${MAIL_DOMAIN}\r" }
+    "Your first mail domain name" { send "\${DOMAIN}\r" }
     timeout { send_user "Error: timeout waiting for mail domain prompt.\n"; exit 1 }
 }
 sleep 5
@@ -176,14 +174,14 @@ fi
 log "********************************************************************"
 log "* URLs of installed web applications:"
 log "*"
-log "* - Roundcube webmail: https://${MAIL_DOMAIN}/mail/"
-log "* - netdata (monitor): https://${MAIL_DOMAIN}/netdata/"
+log "* - Roundcube webmail: https://${DOMAIN}/mail/"
+log "* - netdata (monitor): https://${DOMAIN}/netdata/"
 log "*"
-log "* - Web admin panel (iRedAdmin): https://${MAIL_DOMAIN}/iredadmin/"
+log "* - Web admin panel (iRedAdmin): https://${DOMAIN}/iredadmin/"
 log "*"
 log "* You can login to above links with below credential:"
 log "*"
-log "* - Username: ${ADMIN}"
+log "* - Username: ${MAIL_ADMIN}"
 log "* - Password: ${MAIL_ADMIN_PASSWORD}"
 log "*"
 log "********************************************************************"
