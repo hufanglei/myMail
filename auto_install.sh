@@ -67,7 +67,7 @@ cat <<EOL > /opt/iredmail_install.expect
 set timeout -1
 log_user 1
 set MYSQL_ROOT_PASSWORD "${MYSQL_ROOT_PASSWORD}"
-set DOMAIN "${DOMAIN}"
+set MAIL_DOMAIN "${MAIL_DOMAIN}"
 set MAIL_ADMIN_PASSWORD "${MAIL_ADMIN_PASSWORD}"
 
 # 启动日志记录
@@ -119,7 +119,7 @@ sleep 5
 
 # 设置邮件域名
 expect {
-    "Your first mail domain name" { send "\${DOMAIN}\r" }
+    "Your first mail domain name" { send "\${MAIL_DOMAIN}\r" }
     timeout { send_user "Error: timeout waiting for mail domain prompt.\n"; exit 1 }
 }
 sleep 5
