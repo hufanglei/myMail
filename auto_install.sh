@@ -2,13 +2,14 @@
 
 # 检查参数个数是否正确
 if [ $# -ne 5 ]; then
-    echo "Usage: $0 <DOMAIN> <MAIL_DOMAIN> <MAIL_ADMIN> <MAIL_ADMIN_PASSWORD> <MYSQL_ROOT_PASSWORD>"
+    echo "Usage: $0 <DOMAIN> <SECOND_DOMAIN_PRE> <MAIL_ADMIN> <MAIL_ADMIN_PASSWORD> <MYSQL_ROOT_PASSWORD>"
     exit 1
 fi
 
 # 获取传递进来的参数
 DOMAIN="$1"
-MAIL_DOMAIN="$2"
+SECOND_DOMAIN_PRE="$2"
+MAIL_DOMAIN="$2.$1"
 MAIL_ADMIN="$3"
 MAIL_ADMIN_PASSWORD="$4"
 MYSQL_ROOT_PASSWORD="$5"
@@ -28,7 +29,7 @@ log() {
 }
 
 # 设置主机名
-hostnamectl set-hostname "${DOMAIN}"
+hostnamectl set-hostname "${MAIL_ADMIN}"
 if [ $? -eq 0 ]; then
     log "主机名已设置为: $(hostnamectl status | grep 'Static hostname' | awk '{print $3}')"
 else
@@ -37,7 +38,7 @@ else
 fi
 
 # 修改 /etc/hosts 文件，将 FQDN 主机名列为第一项
-echo "127.0.0.1   ${MAIL_DOMAIN} ${DOMAIN} localhost localhost.localdomain" > /etc/hosts
+echo "127.0.0.1   ${MAIL_DOMAIN} ${SECOND_DOMAIN_PRE} localhost localhost.localdomain" > /etc/hosts
 if [ $? -eq 0 ]; then
     log "/etc/hosts 文件已更新，并将 FQDN 主机名列为第一项。"
 else
