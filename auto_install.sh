@@ -57,31 +57,6 @@ else
     exit 1
 fi
 
-# 禁用 SELinux
-setenforce 0
-if [ $? -eq 0 ]; then
-    log "SELinux 已立即禁用。"
-else
-    log "禁用 SELinux 失败。"
-    exit 1
-fi
-sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
-if [ $? -eq 0 ]; then
-    log "SELinux 配置文件已更新，禁用 SELinux。"
-else
-    log "更新 SELinux 配置文件失败。"
-    exit 1
-fi
-
-
-# 安装必要的依赖
-yum install -y wget tar expect
-if [ $? -eq 0 ]; then
-    log "必要的依赖已安装。"
-else
-    log "安装依赖失败。"
-    exit 1
-fi
 
 
 cd /opt/iRedMail-${VERSION}
