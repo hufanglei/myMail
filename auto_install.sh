@@ -55,6 +55,7 @@ else
     exit 1
 fi
 
+yum install -y wget tar expect
 
 
 cd /opt/iRedMail-${VERSION}
